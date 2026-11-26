@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#000000">
+<title>Moonwave</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<canvas id="sky" aria-hidden="true"></canvas>
+
+<div id="app">
+  <main id="main">
+    <header class="topbar">
+      <div class="brand-small"><span class="brand-star">☾</span> Moonwave</div>
+      <span class="source">Music from <b>Audius</b></span>
+    </header>
+
+    <div class="views">
+      <!-- Home: trending -->
+      <section class="view active" data-view="home">
+        <h1>Trending</h1>
+        <div class="seg" id="timeSeg">
+          <button data-time="week" class="on">This week</button>
+          <button data-time="month">This month</button>
+          <button data-time="allTime">All time</button>
+        </div>
+        <div class="chips" id="genreChips"></div>
+        <div id="homeBody"></div>
+      </section>
+
+      <!-- Search -->
+      <section class="view" data-view="search">
+        <h1>Search</h1>
+        <input id="searchInput" class="field search" placeholder="Songs or artists" autocomplete="off" enterkeyhint="search">
+        <div id="searchBody"><p class="muted center pad-top">Find songs and artists on Audius.</p></div>
+      </section>
+
+      <!-- Library -->
+      <section class="view" data-view="library">
+        <h1>Library</h1>
+        <div class="seg" id="libSeg">
+          <button data-lib="favs" class="on">Favourites</button>
+          <button data-lib="playlists">Playlists</button>
+        </div>
+        <div id="libBody"></div>
+      </section>
+
+      <!-- Now playing -->
+      <section class="view" data-view="now">
+        <div class="now">
+          <div class="cover-wrap">
+            <div class="cover-swipe" id="coverSwipe">
+              <img id="cover" class="cover" alt="" draggable="false">
+            </div>
+          </div>
+          <div class="swipe-tip muted" id="swipeTip">Swipe the cover left for next, right for previous</div>
+          <div class="now-meta">
+            <div class="now-text">
+              <div id="title" class="now-title">Nothing playing</div>
+              <button id="artist" class="now-artist">Pick a song from Trending or Search</button>
+            </div>
+            <button class="icon-btn" id="favBtn" title="Favourite">
+              <svg viewBox="0 0 24 24" class="ic"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+            </button>
+          </div>
+          <div class="status" id="status" hidden></div>
+
+          <div class="progress">
+            <input type="range" id="seek" min="0" max="1000" value="0" aria-label="Seek">
+            <div class="times"><span id="pos">0:00</span><span id="dur">0:00</span></div>
+          </div>
+
+          <div class="controls">
+            <button class="icon-btn" id="shuffleBtn" title="Shuffle">
+              <svg viewBox="0 0 24 24" class="ic"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>
+            </button>
+            <button class="icon-btn big" id="prevBtn" title="Previous">
+              <svg viewBox="0 0 24 24" class="ic fill"><path d="M18 6l-8.5 6L18 18zM6 6h2.2v12H6z"/></svg>
+            </button>
+            <button class="play-btn" id="playBtn" title="Play">
+              <svg viewBox="0 0 24 24" class="ic fill" id="playIcon"><path d="M8 5v14l11-7z"/></svg>
+            </button>
+            <button class="icon-btn big" id="nextBtn" title="Next">
+              <svg viewBox="0 0 24 24" class="ic fill"><path d="M6 6l8.5 6L6 18zM15.8 6H18v12h-2.2z"/></svg>
+            </button>
+            <button class="icon-btn" id="repeatBtn" title="Repeat">
+              <svg viewBox="0 0 24 24" class="ic"><path d="M17 1l4 4-4 4M3 11V9a4 4 0 0 1 4-4h14M7 23l-4-4 4-4M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+              <span class="dot1">1</span>
+            </button>
+          </div>
+
+          <div class="extras">
+            <button class="sleep-btn" id="queueBtn">
+              <svg viewBox="0 0 24 24" class="ic small"><path d="M3 6h14M3 12h14M3 18h9M17 15v6l5-3z"/></svg>
+              <span>Queue</span>
+            </button>
+            <button class="sleep-btn" id="sleepBtn">
+              <svg viewBox="0 0 24 24" class="ic small"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+              <span id="sleepLabel">Sleep timer</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Themes & settings -->
+      <section class="view" data-view="themes">
+        <h1>Themes</h1>
+        <div id="themeList" class="theme-list"></div>
+
+        <h2>StarryNight colours</h2>
+        <div id="schemeList" class="scheme-list"></div>
+
+        <h2>Motion</h2>
+        <div class="seg" id="motionSeg">
+          <button data-motion="full">Full</button>
+          <button data-motion="calm">Calm</button>
+          <button data-motion="off">Still</button>
+        </div>
+        <label class="toggle"><input type="checkbox" id="spinToggle"> Spin the album cover while playing</label>
+
+        <h2>Home-screen widget</h2>
+        <p class="muted small">Long-press your home screen → Widgets → Moonwave. It follows your theme's colour.</p>
+
+        <p class="credits">Music streams from Audius (audius.co). All tracks belong to their artists, and "Open on Audius" in a song's ⋯ menu takes you to its page. StarryNight colours and shooting-star motion are based on the StarryNight theme for Spicetify by b-chen00 (MIT licence). Moonwave is not made by or affiliated with Audius.</p>
+      </section>
+    </div>
+
+    <div id="mini" class="mini" hidden>
+      <img id="miniCover" alt="">
+      <div class="mini-text"><div id="miniTitle"></div><div id="miniArtist" class="muted"></div></div>
+      <button class="icon-btn" id="miniPlay"><svg viewBox="0 0 24 24" class="ic fill"><path id="miniPlayPath" d="M8 5v14l11-7z"/></svg></button>
+      <button class="icon-btn" id="miniNext"><svg viewBox="0 0 24 24" class="ic fill"><path d="M6 6l8.5 6L6 18zM15.8 6H18v12h-2.2z"/></svg></button>
+    </div>
+
+    <nav class="tabs">
+      <button data-go="home" class="on"><svg viewBox="0 0 24 24" class="ic"><path d="M3 11l9-8 9 8M5 9.5V21h14V9.5"/></svg><span>Home</span></button>
+      <button data-go="search"><svg viewBox="0 0 24 24" class="ic"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span>Search</span></button>
+      <button data-go="now"><svg viewBox="0 0 24 24" class="ic"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg><span>Playing</span></button>
+      <button data-go="library"><svg viewBox="0 0 24 24" class="ic"><path d="M4 20V4M9 20V4M14 20l-1.5-15.5 4-.6L21 19.5"/></svg><span>Library</span></button>
+      <button data-go="themes"><svg viewBox="0 0 24 24" class="ic"><path d="M12 2l2.3 6.9L21 12l-6.7 3.1L12 22l-2.3-6.9L3 12l6.7-3.1z"/></svg><span>Themes</span></button>
+    </nav>
+  </main>
+
+  <div id="sheetBackdrop" class="sheet-backdrop" hidden></div>
+  <div id="sheet" class="sheet" hidden>
+    <div class="sheet-grip"></div>
+    <div id="sheetBody"></div>
+  </div>
+
+  <div id="toast" class="toast" hidden></div>
+</div>
+
+<script src="themes.js"></script>
+<script src="audius.js"></script>
+<script src="player.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
